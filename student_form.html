@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Student</title>
+</head>
+<body>
+    <h1>Add Student</h1>
+    <form id="studentForm" action="/students" method="POST">
+
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="age">Age:</label><br>
+        <input type="number" id="age" name="age" required><br>
+        
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" required><br>
+        
+        <label for="country">Country:</label><br>
+        <input type="text" id="country" name="country" required><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("studentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            createStudent();
+        });
+
+        async function createStudent() {
+            const formData = new FormData(document.getElementById("studentForm"));
+            const studentData = {
+                name: formData.get("name"),
+                age: parseInt(formData.get("age")),
+                address: {
+                    city: formData.get("city"),
+                    country: formData.get("country")
+                }
+            };
+
+            try {
+                const response = await fetch("http://localhost:8000/students", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(studentData)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to add student.");
+                }
+
+                alert("Student added successfully.");
+                document.getElementById("studentForm").reset();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to add student. Please try again later.");
+            }
+        }
+    </script>
+</body>
+</html>
